@@ -5,9 +5,9 @@ enum AI_STATE {
 	ANTICIPATE
 };
 
-/// @function			AIState(type);
+/// @function		AIState(type);
 /// @param {Real} type	The state type used for identification. Use AI_STATE enum.
-/// @description		Creates an AI state. Behaviour and Trigger modules can be added.
+/// @description	Creates an AI state. Behaviour and Trigger modules can be added.
 function AIState(type) constructor {
 	#region Define private member variables
 	self.type = type;
@@ -22,10 +22,10 @@ function AIState(type) constructor {
 	#endregion
 	
 	#region Define state functions
-	/// @function					AddBehaviour(behaviour, weight);
-	/// @description				Adds a new behaviour to the state.
+	/// @function			AddBehaviour(behaviour, weight);
+	/// @description		Adds a new behaviour to the state.
 	/// @param {Struct} behaviour	The behaviour struct to add.
-	/// @param {Real} weight		The weight (chance) the behaviour gets choosen.
+	/// @param {Real} weight	The weight (chance) the behaviour gets choosen.
 	AddBehaviour = function(behaviour, weight) {
 		// Store the parent reference and weight inside the behaviour struct
 		behaviour.parent = self;
@@ -35,9 +35,9 @@ function AIState(type) constructor {
 		ds_list_add(behavioursList, behaviour);
 	};
 	
-	/// @function					AddCondition(newState, trigger1, trigger2, trigger3);
-	/// @description				Adds a state change condition to the state.
-	/// @param {Real} newState		The state to change to if the condition is fulfulled.
+	/// @function			AddCondition(newState, trigger1, trigger2, trigger3);
+	/// @description		Adds a state change condition to the state.
+	/// @param {Real} newState	The state to change to if the condition is fulfulled.
 	/// @param {Struct} trigger1	The first trigger to check.
 	/// @param {Struct} [trigger2]	The second trigger to check. (Optional)
 	/// @param {Struct} [trigger3]	The third trigger to check. (Optional)
@@ -51,10 +51,10 @@ function AIState(type) constructor {
 		ds_list_add(conditionsList, {triggers : [trigger1, trigger2, trigger3], newState : newState});
 	};
 	
-	/// @function					AddAnimation(name, track, timerMin, timerMax);
-	/// @description				Adds an animation for the state.
-	/// @param {String} name		The name of the animation.
-	/// @param {Real} track			The track of the animation.
+	/// @function			AddAnimation(name, track, timerMin, timerMax);
+	/// @description		Adds an animation for the state.
+	/// @param {String} name	The name of the animation.
+	/// @param {Real} track		The track of the animation.
 	/// @param {Real} [timerMin]	The minimum time (in seconds) to wait before the animation triggers.
 	/// @param {Real} [timerMax]	The maximum time (in seconds) to wait before the animation triggers.
 	AddAnimation = function(name, track, timerMin, timerMax) {
