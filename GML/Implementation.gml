@@ -1,4 +1,4 @@
-// Set up states
+// Set up states map
 states = ds_map_create();
 currentState = noone;
 
@@ -14,3 +14,6 @@ newState.AddAnimation("idle", 0, 1);
 newState.AddAnimation("flavour1", 1, 3, 10);
 newState.AddAnimation("flavour2", 2, 3, 10);
 states[? newState.type] = newState;
+
+// Set initial state
+currentState = states[? AI_STATE.IDLE];
