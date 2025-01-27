@@ -1,9 +1,9 @@
 # behaviourModules
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![made-with-cpp](https://img.shields.io/badge/C%2B%2B17-green?style=flat&label=Made-with)](https://learn.microsoft.com/en-us/cpp/cpp/welcome-back-to-cpp-modern-cpp)
+[![made-with-cpp](https://img.shields.io/badge/C%2B%2B17-green?style=flat&label=Made%20with)](https://learn.microsoft.com/en-us/cpp/cpp/welcome-back-to-cpp-modern-cpp)
 [![Unity-tested](https://img.shields.io/badge/Works%20with-Unity%20-%23000000.svg?&logo=unity)](https://unity.com)
-[![Gamemaker-tested](https://img.shields.io/badge/GameMaker-orange?style=flat&logo=gamemaker&label=Works-with)](https://gamemaker.io)
+[![Gamemaker-tested](https://img.shields.io/badge/GameMaker-orange?style=flat&logo=gamemaker&label=Works%20with)](https://gamemaker.io)
 
 ## Description
 * Modular state machine for handling AI agents.
