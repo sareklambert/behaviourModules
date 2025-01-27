@@ -1,7 +1,7 @@
-# behaviourCore
+# behaviourModules
 * Modular state machine for handling AI agents.
 * Quickly set up complex agents using modules and conditions.
-* -> See [GML](GML/EnemyCreateEventExample.gml); [Unity](); [C++](raw/Goblin.cpp)
+* -> See [GML](GML/implementation/enemy.gml); [Unity](); [CPP](CPP/implementation/Goblin.cpp)
 * Reuse code for multiple agents.
 
 ## Structure
@@ -12,4 +12,4 @@
 ## Translated to be used in different engines
 * **GML** - GameMaker engine
 * **Unity** - Unity engine
-* **Raw** - C++17 projects
+* **CPP** - C++17 projects
