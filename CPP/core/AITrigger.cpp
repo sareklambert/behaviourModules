@@ -1,18 +1,5 @@
-﻿#include "InputManager.h"
-#include "AITrigger.h"
+﻿#include "AITrigger.h"
 #include "AIState.h"
-
-// Example placeholder. Press space to trigger.
-bool AiTriggerPlayerIsInRange::check()
-{
-    // Check for the spacebar in the captured inputs
-    if (InputManager& input_manager = InputManager::get_instance(); input_manager.check_for_key(' '))
-    {
-        return true;
-    }
-
-    return false;
-}
 
 void AiCondition::set_parent(AiState* t_parent)
 {

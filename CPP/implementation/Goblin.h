@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Enemy.h"
+#include "../../core/Enemy.h"
 
 class Goblin : public Enemy
 {

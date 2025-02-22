@@ -25,19 +25,6 @@ public:
 };
 
 /**
- * @class AiTriggerPlayerIsInRange
- * @brief AI trigger to check if the player is within a specific range.
- *
- * This class is a concrete implementation of the AiTriggerBase interface.
- * It provides logic to evaluate whether the player is in range, triggering a state transition.
- */
-class AiTriggerPlayerIsInRange final : public AiTriggerBase
-{
-public:
-    bool check() override;
-};
-
-/**
  * @class AiCondition
  * @brief Represents a condition for transitioning between AI states.
  *
