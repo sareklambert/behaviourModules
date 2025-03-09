@@ -23,17 +23,17 @@ namespace BehaviourModules.Behaviours
 
         public override void Reset()
         {
-            var randomX = Random.Range(-maxRange, maxRange);
-            var randomZ = Random.Range(-maxRange, maxRange);
+            float randomX = Random.Range(-maxRange, maxRange);
+            float randomZ = Random.Range(-maxRange, maxRange);
             m_targetPosition = new Vector3(m_startPosition.x + randomX, m_startPosition.y, m_startPosition.z + randomZ);
         }
 
         public override bool Execute()
         {
-            var moveDirection = (m_targetPosition - transform.position).normalized;
+            Vector3 moveDirection = (m_targetPosition - transform.position).normalized;
             m_rigidbody.MovePosition(m_rigidbody.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
 
-            return Vector3.Distance(transform.position, m_targetPosition) < .1f;
+            return Vector3.SqrMagnitude(transform.position - m_targetPosition) <= .1f;
         }
     }
 }

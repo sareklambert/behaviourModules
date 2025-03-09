@@ -37,7 +37,7 @@ namespace BehaviourModules.Editor.AIAgentComponent
                 // Display list elements
                 drawElementCallback = (rect, index, _, _) =>
                 {
-                    var triggerElement = property.GetArrayElementAtIndex(index);
+                    SerializedProperty triggerElement = property.GetArrayElementAtIndex(index);
                     if (m_validator.ErrorId == ConfigError.NoTriggerObjectAssigned && m_validator.ErrorListIndex == index)
                         GUI.color = Color.red;
                     EditorGUI.ObjectField(rect, triggerElement, typeof(AITrigger), GUIContent.none);
@@ -50,11 +50,11 @@ namespace BehaviourModules.Editor.AIAgentComponent
                 // Add element
                 onAddCallback = list =>
                 {
-                    var newIndex = list.serializedProperty.arraySize;
+                    int newIndex = list.serializedProperty.arraySize;
                     list.serializedProperty.arraySize++;
                     serializedObject.ApplyModifiedProperties();
 
-                    var newElement = list.serializedProperty.GetArrayElementAtIndex(newIndex);
+                    SerializedProperty newElement = list.serializedProperty.GetArrayElementAtIndex(newIndex);
                     newElement.objectReferenceValue = null;
                 }
             };

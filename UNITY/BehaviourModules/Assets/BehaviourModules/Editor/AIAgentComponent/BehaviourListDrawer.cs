@@ -11,6 +11,9 @@ namespace BehaviourModules.Editor.AIAgentComponent
     /// </summary>
     public class BehaviourListDrawer : ReorderableListDrawer
     {
+        private const string PropertyNameBehaviour = "behaviour";
+        private const string PropertyNameWeight = "weight";
+        
         private readonly AIAgentComponentValidator m_validator;
         
         public BehaviourListDrawer(SerializedObject obj, SerializedProperty prop, AIAgentComponentValidator validator)
@@ -34,10 +37,10 @@ namespace BehaviourModules.Editor.AIAgentComponent
                 // Display list elements
                 drawElementCallback = (rect, index, _, _) =>
                 {
-                    var element = property.GetArrayElementAtIndex(index);
-                    var behaviourProperty = element.FindPropertyRelative("behaviour");
-                    var weightProperty = element.FindPropertyRelative("weight");
-                    var fieldWidth = rect.width / 2 - 5;
+                    SerializedProperty element = property.GetArrayElementAtIndex(index);
+                    SerializedProperty behaviourProperty = element.FindPropertyRelative(PropertyNameBehaviour);
+                    SerializedProperty weightProperty = element.FindPropertyRelative(PropertyNameWeight);
+                    float fieldWidth = rect.width / 2 - 5;
 
                     if (m_validator.ErrorId == ConfigError.NoBehaviourObjectAssigned && m_validator.ErrorListIndex == index)
                         GUI.color = Color.red;
@@ -55,13 +58,13 @@ namespace BehaviourModules.Editor.AIAgentComponent
                 // Add element
                 onAddCallback = list =>
                 {
-                    var newIndex = list.serializedProperty.arraySize;
+                    int newIndex = list.serializedProperty.arraySize;
                     list.serializedProperty.arraySize++;
                     serializedObject.ApplyModifiedProperties();
 
-                    var newElement = list.serializedProperty.GetArrayElementAtIndex(newIndex);
-                    newElement.FindPropertyRelative("behaviour").objectReferenceValue = null;
-                    newElement.FindPropertyRelative("weight").intValue = 1;
+                    SerializedProperty newElement = list.serializedProperty.GetArrayElementAtIndex(newIndex);
+                    newElement.FindPropertyRelative(PropertyNameBehaviour).objectReferenceValue = null;
+                    newElement.FindPropertyRelative(PropertyNameWeight).intValue = 1;
                 }
             };
         }

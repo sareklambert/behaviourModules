@@ -27,10 +27,10 @@ namespace BehaviourModules.Behaviours
         
         public override bool Execute()
         {
-            var moveDirection = (targetTransform.position - transform.position).normalized;
+            Vector3 moveDirection = (targetTransform.position - transform.position).normalized;
             m_rigidbody.MovePosition(m_rigidbody.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
             
-            return Vector3.Distance(transform.position, targetTransform.position) < .1f;
+            return Vector3.SqrMagnitude(transform.position - targetTransform.position) <= .1f;
         }
     }
 }

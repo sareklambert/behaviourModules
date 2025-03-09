@@ -12,8 +12,14 @@ namespace BehaviourModules.Editor.AIAgentComponent
     /// </summary>
     public class StateListDrawer : ReorderableListDrawer
     {
-        private readonly Dictionary<string, BehaviourListDrawer> m_behaviourLists = new();
-        private readonly Dictionary<string, ConditionListDrawer> m_conditionLists = new();
+        private const string PropertyNameStateId = "stateId";
+        private const string PropertyNameBehaviours = "behaviours";
+        private const string PropertyNameConditions = "conditions";
+        private const string PropertyNameTriggers = "triggers";
+        private const string PropertyNameParent = "parent";
+        
+        private readonly Dictionary<string, BehaviourListDrawer> m_behaviourLists = new Dictionary<string, BehaviourListDrawer>();
+        private readonly Dictionary<string, ConditionListDrawer> m_conditionLists = new Dictionary<string, ConditionListDrawer>();
         private readonly AIStateNamesList m_stateNamesList;
         private readonly AIAgentComponentValidator m_validator;
         
@@ -35,20 +41,20 @@ namespace BehaviourModules.Editor.AIAgentComponent
                 drawElementCallback = (rect, index, _, _) =>
                 {
                     // Get the current element's SerializedProperties
-                    var state = property.GetArrayElementAtIndex(index);
-                    var stateId = state.FindPropertyRelative("stateId");
-                    var behaviourList = state.FindPropertyRelative("behaviours");
-                    var conditionList = state.FindPropertyRelative("conditions");
+                    SerializedProperty state = property.GetArrayElementAtIndex(index);
+                    SerializedProperty stateId = state.FindPropertyRelative(PropertyNameStateId);
+                    SerializedProperty behaviourList = state.FindPropertyRelative(PropertyNameBehaviours);
+                    SerializedProperty conditionList = state.FindPropertyRelative(PropertyNameConditions);
 
                     // Get unique keys using property paths
-                    var behaviourKey = behaviourList.propertyPath;
-                    var conditionKey = conditionList.propertyPath;
+                    string behaviourKey = behaviourList.propertyPath;
+                    string conditionKey = conditionList.propertyPath;
 
                     // Check for errors
                     m_validator.CheckForErrors(property, index);
                     
                     // Display foldout with state name as label
-                    var style = new GUIStyle(EditorStyles.foldout) { fontStyle = FontStyle.Bold };
+                    GUIStyle style = new GUIStyle(EditorStyles.foldout) { fontStyle = FontStyle.Bold };
                     if (m_validator.ErrorId != ConfigError.None)
                         GUI.color = Color.red;
                     state.isExpanded = EditorGUI.Foldout(
@@ -70,7 +76,7 @@ namespace BehaviourModules.Editor.AIAgentComponent
                     EditorGUI.LabelField(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), "Name");
                     GUI.color = Color.white;
 
-                    var newStateId = EditorGUI.Popup(
+                    int newStateId = EditorGUI.Popup(
                         new Rect(rect.x + 80, rect.y, rect.width - 80, EditorGUIUtility.singleLineHeight),
                         stateId.intValue,
                         m_stateNamesList!.StateNames
@@ -100,10 +106,10 @@ namespace BehaviourModules.Editor.AIAgentComponent
                     if (m_validator.ErrorId == ConfigError.None) return;
 
                     if (conditionList.arraySize > 0) rect.y -= EditorGUIUtility.singleLineHeight;
-                    for (var i = 0; i < conditionList.arraySize; i++)
+                    for (int i = 0; i < conditionList.arraySize; i++)
                     {
-                        var conditionProperty = conditionList.GetArrayElementAtIndex(i);
-                        var triggerListProperty = conditionProperty.FindPropertyRelative("triggers");
+                        SerializedProperty conditionProperty = conditionList.GetArrayElementAtIndex(i);
+                        SerializedProperty triggerListProperty = conditionProperty.FindPropertyRelative(PropertyNameTriggers);
 
                         rect.y += EditorGUIUtility.singleLineHeight * 3 + EditorGUIUtility.standardVerticalSpacing;
                         rect.y += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) *
@@ -119,12 +125,12 @@ namespace BehaviourModules.Editor.AIAgentComponent
                 // Get element height
                 elementHeightCallback = index =>
                 {
-                    var state = property.GetArrayElementAtIndex(index);
-                    var behaviourList = state.FindPropertyRelative("behaviours");
-                    var conditionList = state.FindPropertyRelative("conditions");
+                    SerializedProperty state = property.GetArrayElementAtIndex(index);
+                    SerializedProperty behaviourList = state.FindPropertyRelative(PropertyNameBehaviours);
+                    SerializedProperty conditionList = state.FindPropertyRelative(PropertyNameConditions);
 
                     // Base height
-                    var height = EditorGUIUtility.singleLineHeight;
+                    float height = EditorGUIUtility.singleLineHeight;
 
                     // Add dropdown
                     if (!state.isExpanded) return height;
@@ -138,10 +144,10 @@ namespace BehaviourModules.Editor.AIAgentComponent
 
                     // Add conditions list
                     if (conditionList.arraySize > 0) height -= EditorGUIUtility.singleLineHeight;
-                    for (var i = 0; i < conditionList.arraySize; i++)
+                    for (int i = 0; i < conditionList.arraySize; i++)
                     {
-                        var conditionProperty = conditionList.GetArrayElementAtIndex(i);
-                        var triggersListProperty = conditionProperty.FindPropertyRelative("triggers");
+                        SerializedProperty conditionProperty = conditionList.GetArrayElementAtIndex(i);
+                        SerializedProperty triggersListProperty = conditionProperty.FindPropertyRelative(PropertyNameTriggers);
 
                         height += EditorGUIUtility.singleLineHeight * 3 + EditorGUIUtility.standardVerticalSpacing;
                         height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) *
@@ -161,15 +167,15 @@ namespace BehaviourModules.Editor.AIAgentComponent
                 // Add element
                 onAddCallback = list =>
                 {
-                    var newIndex = list.serializedProperty.arraySize;
+                    int newIndex = list.serializedProperty.arraySize;
                     list.serializedProperty.arraySize++;
                     serializedObject.ApplyModifiedProperties();
 
-                    var newElement = list.serializedProperty.GetArrayElementAtIndex(newIndex);
-                    newElement.FindPropertyRelative("stateId").intValue = -1;
-                    newElement.FindPropertyRelative("behaviours").ClearArray();
-                    newElement.FindPropertyRelative("conditions").ClearArray();
-                    newElement.FindPropertyRelative("parent").objectReferenceValue = serializedObject.targetObject;
+                    SerializedProperty newElement = list.serializedProperty.GetArrayElementAtIndex(newIndex);
+                    newElement.FindPropertyRelative(PropertyNameStateId).intValue = -1;
+                    newElement.FindPropertyRelative(PropertyNameBehaviours).ClearArray();
+                    newElement.FindPropertyRelative(PropertyNameConditions).ClearArray();
+                    newElement.FindPropertyRelative(PropertyNameParent).objectReferenceValue = serializedObject.targetObject;
                 }
             };
         }

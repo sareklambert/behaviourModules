@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using BehaviourModules.Behaviours;
 using BehaviourModules.Triggers;
@@ -23,22 +24,29 @@ namespace BehaviourModules.Implementation.Enemy
             m_lineRenderer = GetComponent<LineRenderer>();
             m_lineRenderer.useWorldSpace = true;
             SetVisualizationMode(true);
+            
+            StartCoroutine(VisualizeCoroutine());
         }
 
-        private void FixedUpdate()
+        private IEnumerator VisualizeCoroutine()
         {
-            if (m_visualizeDetectionRange)
+            while (true)
             {
-                DrawCircle();
-            }
-            else if (m_target)
-            {
-                DrawLineToTarget();
-            }
-            
-            if (objectInRangeTrigger.Check())
-            {
-                SetVisualizationMode(false, behaviourMoveTowards.TargetTransform);
+                if (m_visualizeDetectionRange)
+                {
+                    DrawCircle();
+                }
+                else if (m_target)
+                {
+                    DrawLineToTarget();
+                }
+
+                if (objectInRangeTrigger.Check())
+                {
+                    SetVisualizationMode(false, behaviourMoveTowards.TargetTransform);
+                }
+
+                yield return new WaitForSeconds(.025f);
             }
         }
 
@@ -53,13 +61,13 @@ namespace BehaviourModules.Implementation.Enemy
         private void DrawCircle()
         {
             const float angleStep = 360f / Segments;
-            var points = new Vector3[Segments + 1];
+            Vector3[] points = new Vector3[Segments + 1];
 
-            for (var i = 0; i <= Segments; i++)
+            for (int i = 0; i <= Segments; i++)
             {
-                var angle = Mathf.Deg2Rad * i * angleStep;
-                var x = Mathf.Cos(angle) * objectInRangeTrigger.Range;
-                var z = Mathf.Sin(angle) * objectInRangeTrigger.Range;
+                float angle = Mathf.Deg2Rad * i * angleStep;
+                float x = Mathf.Cos(angle) * objectInRangeTrigger.Range;
+                float z = Mathf.Sin(angle) * objectInRangeTrigger.Range;
                 points[i] = new Vector3(x, 0, z) + transform.position;
             }
 
@@ -68,7 +76,7 @@ namespace BehaviourModules.Implementation.Enemy
 
         private void DrawLineToTarget()
         {
-            var points = new Vector3[2];
+            Vector3[] points = new Vector3[2];
             points[0] = transform.position;
             points[1] = m_target.position;
             m_lineRenderer.SetPositions(points);

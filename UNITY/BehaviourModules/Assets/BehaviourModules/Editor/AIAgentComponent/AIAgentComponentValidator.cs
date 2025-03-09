@@ -2,24 +2,30 @@ using UnityEditor;
 
 namespace BehaviourModules.Editor.AIAgentComponent
 {
+    public enum ConfigError
+    {
+        None,
+        NoStateName,
+        StateNameAssignedMultipleTimes,
+        BehaviourListEmpty,
+        TriggerListEmpty,
+        NoBehaviourObjectAssigned,
+        NoTriggerObjectAssigned,
+        NoNextStateName,
+        NextStateIsStateName
+    }
+    
     /// <summary>
     /// A class used for detecting config errors and setting error message values.
     /// </summary>
     public class AIAgentComponentValidator
     {
-        public enum ConfigError
-        {
-            None,
-            NoStateName,
-            StateNameAssignedMultipleTimes,
-            BehaviourListEmpty,
-            TriggerListEmpty,
-            NoBehaviourObjectAssigned,
-            NoTriggerObjectAssigned,
-            NoNextStateName,
-            NextStateIsStateName
-        }
-
+        private const string PropertyNameStateId = "stateId";
+        private const string PropertyNameBehaviours = "behaviours";
+        private const string PropertyNameConditions = "conditions";
+        private const string PropertyNameTriggers = "triggers";
+        private const string PropertyNameNextState = "nextState";
+        
         public ConfigError ErrorId { get; private set; } = ConfigError.None;
         public int ErrorListIndex { get; private set; } = -1;
         public string ErrorMessage { get; private set; } = "";
@@ -31,8 +37,8 @@ namespace BehaviourModules.Editor.AIAgentComponent
             SetError(ConfigError.None, "");
 
             // Check: No state name assigned
-            var currentStateProperty = statesListProperty.GetArrayElementAtIndex(currentStateIndex);
-            var ownStateId = currentStateProperty.FindPropertyRelative("stateId").intValue;
+            SerializedProperty currentStateProperty = statesListProperty.GetArrayElementAtIndex(currentStateIndex);
+            int ownStateId = currentStateProperty.FindPropertyRelative(PropertyNameStateId).intValue;
             if (ownStateId == -1)
             {
                 SetError(ConfigError.NoStateName, "No state name assigned");
@@ -40,11 +46,11 @@ namespace BehaviourModules.Editor.AIAgentComponent
             }
             
             // Check: Same state name assigned multiple times
-            for (var i = 0; i < statesListProperty.arraySize; i++)
+            for (int i = 0; i < statesListProperty.arraySize; i++)
             {
                 if (i == currentStateIndex) continue;
                 
-                var currentStateId = statesListProperty.GetArrayElementAtIndex(i).FindPropertyRelative("stateId").intValue;
+                int currentStateId = statesListProperty.GetArrayElementAtIndex(i).FindPropertyRelative(PropertyNameStateId).intValue;
                 if (ownStateId != currentStateId) continue;
                 
                 SetError(ConfigError.StateNameAssignedMultipleTimes, "State name assigned to multiple states");
@@ -52,7 +58,7 @@ namespace BehaviourModules.Editor.AIAgentComponent
             }
             
             // Check: Behaviour list is empty
-            var behaviourListProperty = currentStateProperty.FindPropertyRelative("behaviours");
+            SerializedProperty behaviourListProperty = currentStateProperty.FindPropertyRelative(PropertyNameBehaviours);
             if (behaviourListProperty.arraySize == 0)
             {
                 SetError(ConfigError.BehaviourListEmpty, "Behaviour list is empty");
@@ -60,9 +66,9 @@ namespace BehaviourModules.Editor.AIAgentComponent
             }
 
             // Check: No behaviour object assigned
-            for (var i = 0; i < behaviourListProperty.arraySize; i++)
+            for (int i = 0; i < behaviourListProperty.arraySize; i++)
             {
-                var behaviourProperty = behaviourListProperty.GetArrayElementAtIndex(i).FindPropertyRelative("behaviour");
+                SerializedProperty behaviourProperty = behaviourListProperty.GetArrayElementAtIndex(i).FindPropertyRelative(PropertyNameBehaviours);
                 if (behaviourProperty.objectReferenceValue) continue;
                 
                 SetError(ConfigError.NoBehaviourObjectAssigned, "No behaviour object assigned", i);
@@ -70,15 +76,15 @@ namespace BehaviourModules.Editor.AIAgentComponent
             }
             
             // Check: Condition list is empty
-            var conditionListProperty = currentStateProperty.FindPropertyRelative("conditions");
+            SerializedProperty conditionListProperty = currentStateProperty.FindPropertyRelative(PropertyNameConditions);
             if (conditionListProperty.arraySize == 0) return;
             
             // Check: Multiple
-            for (var i = 0; i < conditionListProperty.arraySize; i++)
+            for (int i = 0; i < conditionListProperty.arraySize; i++)
             {
-                var conditionProperty = conditionListProperty.GetArrayElementAtIndex(i);
-                var triggersListProperty = conditionProperty.FindPropertyRelative("triggers");
-                var nextStateProperty = conditionProperty.FindPropertyRelative("nextState");
+                SerializedProperty conditionProperty = conditionListProperty.GetArrayElementAtIndex(i);
+                SerializedProperty triggersListProperty = conditionProperty.FindPropertyRelative(PropertyNameTriggers);
+                SerializedProperty nextStateProperty = conditionProperty.FindPropertyRelative(PropertyNameNextState);
 
                 // Check: No next state name assigned
                 if (nextStateProperty.intValue == -1)
@@ -102,9 +108,9 @@ namespace BehaviourModules.Editor.AIAgentComponent
                 }
 
                 // Check: No trigger object assigned
-                for (var j = 0; j < triggersListProperty.arraySize; j++)
+                for (int j = 0; j < triggersListProperty.arraySize; j++)
                 {
-                    var triggerProperty = triggersListProperty.GetArrayElementAtIndex(j);
+                    SerializedProperty triggerProperty = triggersListProperty.GetArrayElementAtIndex(j);
                     if (triggerProperty.objectReferenceValue) continue;
                     
                     SetError(ConfigError.NoTriggerObjectAssigned, "No trigger object assigned", j);

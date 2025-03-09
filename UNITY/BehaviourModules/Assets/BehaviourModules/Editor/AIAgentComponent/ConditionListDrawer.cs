@@ -12,7 +12,10 @@ namespace BehaviourModules.Editor.AIAgentComponent
     /// </summary>
     public class ConditionListDrawer : ReorderableListDrawer
     {
-        private readonly Dictionary<string, TriggerListDrawer> m_triggerLists = new();
+        private const string PropertyNameNextState = "nextState";
+        private const string PropertyNameTriggers = "triggers";
+        
+        private readonly Dictionary<string, TriggerListDrawer> m_triggerLists = new Dictionary<string, TriggerListDrawer>();
         private readonly AIStateNamesList m_stateNamesList;
         private readonly AIAgentComponentValidator m_validator;
         
@@ -36,16 +39,16 @@ namespace BehaviourModules.Editor.AIAgentComponent
                 // Display list elements
                 drawElementCallback = (rect, index, _, _) =>
                 {
-                    var conditionElement = property.GetArrayElementAtIndex(index);
-                    var nextStateProperty = conditionElement.FindPropertyRelative("nextState");
-                    var triggerListProperty = conditionElement.FindPropertyRelative("triggers");
-                    var triggersKey = triggerListProperty.propertyPath;
+                    SerializedProperty conditionElement = property.GetArrayElementAtIndex(index);
+                    SerializedProperty nextStateProperty = conditionElement.FindPropertyRelative(PropertyNameNextState);
+                    SerializedProperty triggerListProperty = conditionElement.FindPropertyRelative(PropertyNameTriggers);
+                    string triggersKey = triggerListProperty.propertyPath;
 
                     // Next state dropdown
                     if (m_validator.ErrorId is ConfigError.NoNextStateName or ConfigError.NextStateIsStateName && m_validator.ErrorListIndex == index)
                         GUI.color = Color.red;
                     EditorGUI.LabelField(new Rect(rect.x, rect.y, 80, EditorGUIUtility.singleLineHeight), "Next state");
-                    var newNextStateId = EditorGUI.Popup(
+                    int newNextStateId = EditorGUI.Popup(
                         new Rect(rect.x + 80, rect.y, rect.width - 80, EditorGUIUtility.singleLineHeight),
                         nextStateProperty.intValue,
                         m_stateNamesList.StateNames
@@ -71,11 +74,11 @@ namespace BehaviourModules.Editor.AIAgentComponent
                 // Get element height
                 elementHeightCallback = index =>
                 {
-                    var conditionProperty = property.GetArrayElementAtIndex(index);
-                    var triggersListProperty = conditionProperty.FindPropertyRelative("triggers");
+                    SerializedProperty conditionProperty = property.GetArrayElementAtIndex(index);
+                    SerializedProperty triggersListProperty = conditionProperty.FindPropertyRelative(PropertyNameTriggers);
 
                     // Base height
-                    var height = EditorGUIUtility.singleLineHeight * 3; 
+                    float height = EditorGUIUtility.singleLineHeight * 3; 
                     
                     // Add triggers list height
                     height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * (Mathf.Max(1, triggersListProperty.arraySize) + 2); 
@@ -86,13 +89,13 @@ namespace BehaviourModules.Editor.AIAgentComponent
                 // Add element
                 onAddCallback = list =>
                 {
-                    var newIndex = list.serializedProperty.arraySize;
+                    int newIndex = list.serializedProperty.arraySize;
                     list.serializedProperty.arraySize++;
                     serializedObject.ApplyModifiedProperties();
 
-                    var newElement = list.serializedProperty.GetArrayElementAtIndex(newIndex);
-                    newElement.FindPropertyRelative("nextState").intValue = -1;
-                    newElement.FindPropertyRelative("triggers").ClearArray();
+                    SerializedProperty newElement = list.serializedProperty.GetArrayElementAtIndex(newIndex);
+                    newElement.FindPropertyRelative(PropertyNameNextState).intValue = -1;
+                    newElement.FindPropertyRelative(PropertyNameTriggers).ClearArray();
                 }
             };
         }

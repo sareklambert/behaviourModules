@@ -12,6 +12,8 @@ namespace BehaviourModules.Editor
     [CustomEditor(typeof(AIStateNamesList))]
     public class AIStateNamesListEditor : UnityEditor.Editor
     {
+        private const string PropertyNameStateNames = "stateNames";
+        
         private SerializedProperty m_stateNamesProperty;
         private ReorderableList m_stateNamesItemsList;
         private AIStateNamesList m_aiStateNamesList;
@@ -19,7 +21,7 @@ namespace BehaviourModules.Editor
         private void OnEnable()
         {
             m_aiStateNamesList = (AIStateNamesList) target;
-            m_stateNamesProperty = serializedObject.FindProperty("stateNames");
+            m_stateNamesProperty = serializedObject.FindProperty(PropertyNameStateNames);
 
             m_stateNamesItemsList = new ReorderableList(serializedObject, m_stateNamesProperty)
             {
@@ -33,11 +35,11 @@ namespace BehaviourModules.Editor
                 // Display list elements
                 drawElementCallback = (rect, index, _, _) =>
                 {
-                    var element = m_stateNamesProperty.GetArrayElementAtIndex(index);
-                    var availableIDs = m_aiStateNamesList.StateNames;
+                    SerializedProperty element = m_stateNamesProperty.GetArrayElementAtIndex(index);
+                    string[] availableIDs = m_aiStateNamesList.StateNames;
 
                     // Display field for the state name
-                    var color = GUI.color;
+                    Color color = GUI.color;
                     if (string.IsNullOrWhiteSpace(element.stringValue) || availableIDs.Count(item => string.Equals(item, element.stringValue)) > 1)
                     {
                         GUI.color = Color.red;
@@ -61,10 +63,10 @@ namespace BehaviourModules.Editor
                 // Get element height
                 elementHeightCallback = index =>
                 {
-                    var element = m_stateNamesProperty.GetArrayElementAtIndex(index);
-                    var availableIDs = m_aiStateNamesList.StateNames;
+                    SerializedProperty element = m_stateNamesProperty.GetArrayElementAtIndex(index);
+                    string[] availableIDs = m_aiStateNamesList.StateNames;
 
-                    var height = EditorGUI.GetPropertyHeight(element);
+                    float height = EditorGUI.GetPropertyHeight(element);
 
                     if (string.IsNullOrWhiteSpace(element.stringValue) || availableIDs.Count(item => string.Equals(item, element.stringValue)) > 1)
                     {
@@ -79,7 +81,7 @@ namespace BehaviourModules.Editor
                 {
                     list.serializedProperty.arraySize++;
 
-                    var newElement = list.serializedProperty.GetArrayElementAtIndex(list.serializedProperty.arraySize - 1);
+                    SerializedProperty newElement = list.serializedProperty.GetArrayElementAtIndex(list.serializedProperty.arraySize - 1);
                     newElement.stringValue = "";
                 }
             };

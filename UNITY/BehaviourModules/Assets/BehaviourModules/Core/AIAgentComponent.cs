@@ -9,7 +9,7 @@ namespace BehaviourModules.Core
     public class AIAgentComponent : MonoBehaviour
     {
         [SerializeField] private AIStateNamesList stateNamesList;
-        [SerializeField] private List<AIState> states = new();
+        [SerializeField] private List<AIState> states = new List<AIState>();
         private int m_currentStateIndex;
 
         public void SetCurrentState(int index)

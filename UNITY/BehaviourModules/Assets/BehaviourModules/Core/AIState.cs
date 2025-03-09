@@ -22,11 +22,11 @@ namespace BehaviourModules.Core
         // Selects a random index based on weighted probabilities.
         private int WeightedRandomSelect(List<int> weights)
         {
-            var totalWeight = weights.Sum();
-            var randomValue = Random.Range(0, totalWeight);
+            int totalWeight = weights.Sum();
+            int randomValue = Random.Range(0, totalWeight);
         
-            var currentWeight = 0;
-            for (var i = 0; i < weights.Count; i++)
+            int currentWeight = 0;
+            for (int i = 0; i < weights.Count; i++)
             {
                 currentWeight += weights[i];
                 if (randomValue < currentWeight)
@@ -51,8 +51,8 @@ namespace BehaviourModules.Core
             if (!m_currentBehaviour)
             {
                 // Select a new behaviour based on weighted probabilities
-                var weights = behaviours.Select(behaviour => behaviour.Weight).ToList();
-                var newIndex = WeightedRandomSelect(weights);
+                List<int> weights = behaviours.Select(behaviour => behaviour.Weight).ToList();
+                int newIndex = WeightedRandomSelect(weights);
                 m_currentBehaviour = behaviours[newIndex].Behaviour;
                 m_currentBehaviour.Reset();
             }
@@ -63,8 +63,8 @@ namespace BehaviourModules.Core
                 ResetCurrentBehaviour();
             }
             
-            // Evaluate conditions to determine if the state should change
-            foreach (var condition in conditions.Where(condition => condition.Triggers.Any(trigger => trigger.Check())))
+            // Check all the condition's triggers to determine if the state should change
+            foreach (AICondition condition in conditions.Where(condition => condition.Triggers.Any(trigger => trigger.Check())))
             {
                 parent.SetCurrentState(condition.NextState);
             }

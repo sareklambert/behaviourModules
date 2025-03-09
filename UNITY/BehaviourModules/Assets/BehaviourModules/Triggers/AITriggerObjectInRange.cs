@@ -14,7 +14,7 @@ namespace BehaviourModules.Triggers
         
         public override bool Check()
         {
-            return Vector3.Distance(transform.position, target.position) <= range;
+            return Vector3.SqrMagnitude(transform.position - target.position) <= range * range;
         }
     }
 }

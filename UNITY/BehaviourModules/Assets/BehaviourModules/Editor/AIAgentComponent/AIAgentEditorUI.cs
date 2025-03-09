@@ -7,6 +7,9 @@ namespace BehaviourModules.Editor.AIAgentComponent
     /// </summary>
     public class AIAgentEditorUI
     {
+        private const string PropertyNameStates = "states";
+        private const string PropertyNameStateNamesList = "stateNamesList";
+        
         private readonly SerializedObject m_aiAgentObject;
         private readonly SerializedProperty m_statesProperty;
         private readonly SerializedProperty m_stateNamesProperty;
@@ -16,8 +19,8 @@ namespace BehaviourModules.Editor.AIAgentComponent
         public AIAgentEditorUI(SerializedObject aiAgentObject)
         {
             m_aiAgentObject = aiAgentObject;
-            m_statesProperty = aiAgentObject.FindProperty("states");
-            m_stateNamesProperty = aiAgentObject.FindProperty("stateNamesList");
+            m_statesProperty = aiAgentObject.FindProperty(PropertyNameStates);
+            m_stateNamesProperty = aiAgentObject.FindProperty(PropertyNameStateNamesList);
         }
 
         public void Draw()

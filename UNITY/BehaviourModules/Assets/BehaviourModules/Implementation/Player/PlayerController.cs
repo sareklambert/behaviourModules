@@ -8,23 +8,19 @@ namespace BehaviourModules.Implementation.Player
     public class PlayerController : MonoBehaviour
     {
         [SerializeField] private float moveSpeed = 5f;
-        private Vector2 m_moveInput;
         private Rigidbody m_rigidbody;
+        private Vector3 m_moveDirection = new Vector3(0f, 0f, 0f);
 
         private void Start()
         {
             m_rigidbody = GetComponent<Rigidbody>();
         }
 
-        private void Update()
-        {
-            m_moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        }
-
         private void FixedUpdate()
         {
-            var moveDirection = new Vector3(m_moveInput.x, 0, m_moveInput.y);
-            m_rigidbody.MovePosition(m_rigidbody.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
+            m_moveDirection.x = Input.GetAxis("Horizontal");
+            m_moveDirection.z = Input.GetAxis("Vertical");
+            m_rigidbody.MovePosition(m_rigidbody.position + m_moveDirection * (moveSpeed * Time.fixedDeltaTime));
         }
     }
 }
