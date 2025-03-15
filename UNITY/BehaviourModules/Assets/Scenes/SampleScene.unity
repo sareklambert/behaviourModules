@@ -1017,9 +1017,9 @@ GameObject:
   - component: {fileID: 1920196354}
   - component: {fileID: 1920196353}
   - component: {fileID: 1920196352}
-  - component: {fileID: 1920196347}
   - component: {fileID: 1920196357}
   - component: {fileID: 1920196356}
+  - component: {fileID: 1920196347}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged

@@ -22,6 +22,7 @@ namespace BehaviourModules.Editor.AIAgentComponent
     {
         private const string PropertyNameStateId = "stateId";
         private const string PropertyNameBehaviours = "behaviours";
+        private const string PropertyNameBehaviour = "behaviour";
         private const string PropertyNameConditions = "conditions";
         private const string PropertyNameTriggers = "triggers";
         private const string PropertyNameNextState = "nextState";
@@ -68,7 +69,7 @@ namespace BehaviourModules.Editor.AIAgentComponent
             // Check: No behaviour object assigned
             for (int i = 0; i < behaviourListProperty.arraySize; i++)
             {
-                SerializedProperty behaviourProperty = behaviourListProperty.GetArrayElementAtIndex(i).FindPropertyRelative(PropertyNameBehaviours);
+                SerializedProperty behaviourProperty = behaviourListProperty.GetArrayElementAtIndex(i).FindPropertyRelative(PropertyNameBehaviour);
                 if (behaviourProperty.objectReferenceValue) continue;
                 
                 SetError(ConfigError.NoBehaviourObjectAssigned, "No behaviour object assigned", i);
